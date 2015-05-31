@@ -1,18 +1,25 @@
-var PageTransitions = (function($) {
+var PageTransitions = (function() {
+  var each = function(query, callback) {
+    return Array.prototype.slice.call(document.querySelectorAll(query), 0).map(callback);
+  };
+  String.prototype.bool = function() {
+    return (/^true$/i).test(this);
+  };
   var startElement = 0,
   animEndEventNames = {
     'WebkitAnimation': 'webkitAnimationEnd',
     'OAnimation': 'oAnimationEnd',
     'msAnimation': 'MSAnimationEnd',
     'animation': 'animationend'
-  }
+  };
 
   function getTransitionPrefix() {
     var b = document.body || document.documentElement;
     var s = b.style;
     var p = 'animation';
-    if(typeof s[p] == 'string')
+    if(typeof s[p] == 'string'){
       return 'animation';
+    }
 
     // Tests for vendor specific prop
     var v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
@@ -27,100 +34,112 @@ var PageTransitions = (function($) {
   animEndEventName = animEndEventNames[getTransitionPrefix()];
 
   function init() {
-    $(".et-page").each(function() {
-      $(this).data('originalClassList', $(this).attr('class'));
+    each(".et-page", function(elem) {
+      elem.setAttribute('originalClassList', elem.className);
     });
-    $(".et-wrapper").each(function() {
-      $(this).data('current', 0);
-      $(this).data('isAnimating', false);
-      $(this).children(".et-page").eq(startElement).addClass('et-page-current');
+    each(".et-wrapper", function(elem) {
+      elem.setAttribute('current', 0);
+      elem.setAttribute('isAnimating', false);
+      elem.querySelectorAll(".et-page")[startElement].classList.add('et-page-current');
     });
-
-    $(".et-rotate").click(function() {
-      animate($(this));
+    each(".et-rotate", function(elem) {
+      elem.addEventListener('click', function() {
+        animate(this);
+      });
     });
   }
 
   function animate(block, callback) {
-    var outClass = $(block).attr('et-out'),
-        inClass  = $(block).attr('et-in'),
-        step     = $(block).attr('et-step'),
-        block    = $(block).closest('.et-wrapper')
+    var outClass = formatClass(block.getAttribute('et-out')),
+        inClass  = formatClass(block.getAttribute('et-in')),
+        step     = block.getAttribute('et-step')
 
     if (step === undefined)
       step = 1;
 
-    block = $(block);
-    inClass = formatClass(inClass);
-    outClass = formatClass(outClass);
-    var current = block.data('current'),
-        $pages = block.children('.et-page'),
-        pagesCount = $pages.length,
-        endCurrPage = false,
-        endNextPage = false;
+    if (block.classList.contains('et-rotate') && !block.classList.contains('et-wrapper')) {
+      block = block.parentNode;
+      if (!block.classList.contains('et-wrapper')) {
+        block = block.parentNode;
+      }
+    }
 
-    if(block.data('isAnimating')) {
+    var current = parseInt(block.getAttribute('current'), 10),
+      $pages = block.querySelectorAll('.et-page'),
+      pagesCount = $pages.length,
+      endCurrPage = false,
+      endNextPage = false;
+
+    if (block.getAttribute('isAnimating') && block.getAttribute('isAnimating').bool()) {
       return false;
     }
 
-    block.data('isAnimating', true);
-
-    var $currPage = $pages.eq(current);
+    block.setAttribute('isAnimating', true);
+    var $currPage = $pages[current];
     current = current*1 + step*1;
     if (current >= pagesCount) {
       current=0;
     }
 
-    block.data('current', current);
+    block.setAttribute('current', current);
 
-    var $nextPage = $pages.eq(current).addClass('et-page-current');
+    var $nextPage = $pages[current];
 
-    $currPage.addClass(outClass).on(animEndEventName, function() {
-      $currPage.off(animEndEventName);
+    outClass.forEach(function(c) {
+      $currPage.classList.add(c);
+    });
+
+    $currPage.addEventListener(animEndEventName, function handlecurr() {
+      this.removeEventListener(animEndEventName, handlecurr);
       endCurrPage = true;
-      if(endNextPage) {
-        if(jQuery.isFunction(callback)) {
-          callback(block, $nextPage, $currPage);
+      if (endNextPage) {
+        if(typeof(callback) === "function") {
+          callback(block, $nextPage, this);
         }
-        onEndAnimation($currPage, $nextPage, block);
+        onEndAnimation(this, $nextPage, block);
       }
     });
 
-    $nextPage.addClass(inClass).on(animEndEventName, function() {
-      $nextPage.off(animEndEventName);
+    inClass.forEach(function(c) {
+      $nextPage.classList.add(c);
+    });
+    $nextPage.classList.add('et-page-current');
+    $nextPage.addEventListener(animEndEventName, function handlenext() {
+      this.removeEventListener(animEndEventName, handlenext);
       endNextPage = true;
       if(endCurrPage) {
-        onEndAnimation($currPage, $nextPage, block);
+        onEndAnimation($currPage, this, block);
       }
     });
   }
 
   function onEndAnimation($outpage, $inpage, block) {
     resetPage($outpage, $inpage);
-    $outpage.trigger("animation.out.complete");
-    $inpage.trigger("animation.in.complete");
-    block.data('isAnimating', false);
+    block.setAttribute('isAnimating', false);
+    // $outpage.trigger("animation.out.complete");
+    // $inpage.trigger("animation.in.complete");
   }
 
   function resetPage($outpage, $inpage) {
-    $outpage.attr('class', $outpage.data( 'originalClassList'));
-    $inpage.attr('class', $inpage.data( 'originalClassList') + ' et-page-current');
+    $inpage.className = $inpage.getAttribute('originalClassList') + ' et-page-current';
+    $outpage.className = $outpage.getAttribute('originalClassList');
   }
 
   function formatClass(str) {
     var classes = str.split(" ");
-    var output = "";
-    for(var n=0; n<classes.length; n++){
-      output += " pt-page-" + classes[n];
+    var output = [];
+    for(var i = 0; i < classes.length; i++) {
+      output.push("pt-page-" + classes[i]);
     }
     return output;
   }
+
   return {
     init : init,
     animate: animate
   };
-})(jQuery);
+})();
 
-jQuery(function($) {
+document.addEventListener('DOMContentLoaded', function(){
   PageTransitions.init();
 });
