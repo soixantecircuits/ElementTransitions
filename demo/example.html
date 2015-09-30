@@ -1,36 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
   <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="../build/elementTransitions.css" />
-    <script src="../build/elementTransitions.min.js"></script>
+    <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="../src/css/elementTransitions.css" />
     <style>
       .et-wrapper {
         width: 200px;
         height: 200px;
+        font-family: sans-serif;
+        color: white;
       }
-      .et-page:nth-child(1) {
+      .et-block {
+        cursor: pointer;
+      }
+      .et-block:nth-child(1) {
         background: red;
       }
-      .et-page:nth-child(2) {
+      .et-block:nth-child(2) {
         background: blue;
       }
-      .et-page:nth-child(3) {
+      .et-block:nth-child(3) {
         background: purple;
       }
     </style>
   </head>
   <body>
-    <div class="et-wrapper">
-      <div class="et-page et-rotate" et-step=2 et-in="rotateCarouselBottomIn" et-out="rotateCarouselBottomOut ontop">
-        <h2>Page 1</h2>
+    <div class="et-wrapper et-trigger" et-in="rotateSlideIn" et-out="rotateSlideOut">
+      <div class="et-block">
+        <h2>block 1</h2>
       </div>
-      <div class="et-page et-rotate" et-step=-1 et-in="rotateCarouselBottomIn" et-out="rotateCarouselBottomOut ontop">
-        <h2>Page 2</h2>
-      </div>
-      <div class="et-page et-rotate" et-step=-1 et-in="rotateCarouselBottomIn" et-out="rotateCarouselBottomOut ontop">
-        <h2>Page 3</h2>
+      <div class="et-block">
+        <h2>block 2</h2>
       </div>
     </div>
+    <div class="et-wrapper">
+      <button class="et-trigger" et-in="rotateSlideIn" et-out="rotateSlideOut">Next</button>
+      <div class="et-block">
+        <h2>block 1</h2>
+      </div>
+      <div class="et-block">
+        <h2>block 2</h2>
+      </div>
+    </div>
+    <script src="../src/js/elementTransitions.vanilla.js"></script>
   </body>
 </html>

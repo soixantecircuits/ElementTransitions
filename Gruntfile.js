@@ -20,7 +20,7 @@ module.exports = function(grunt) {
       taskName: {
         options: {
           position: 'top',
-          banner: '/* <%= pkg.name %>\nhttps://github.com/dan-silver/ElementTransitions.js %> */\n',
+          banner: '/* <%= pkg.name %>\nhttps://github.com/soixantecircuits/ElementTransitions.js %> */\n',
           linebreak: true
         },
         files: {
