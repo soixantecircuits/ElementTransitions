@@ -77,7 +77,8 @@ var ElementTransitions = function(){
 
       // Switch current block
       var prevBlock = currentBlock;
-      current = ((Number(current) + step) > blocks.length - 1) ? 0 : Number(current) + step;
+      // + operator in front of variable cast it to Number(). Less readable but more concise.
+      current = ((+current + +step) > (blocks.length - 1)) ? (+current + +step) - blocks.length : +current + +step;
       wrapper.dataset.current = current;
       currentBlock = blocks[current];
 

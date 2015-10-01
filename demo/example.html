@@ -14,15 +14,14 @@
       }
       .et-block {
         cursor: pointer;
+        text-align: center;
+        line-height: 150px;
       }
-      .et-block:nth-child(1) {
-        background: red;
+      .et-block:nth-child(odd) {
+        background: #CCC;
       }
-      .et-block:nth-child(2) {
-        background: blue;
-      }
-      .et-block:nth-child(3) {
-        background: purple;
+      .et-block:nth-child(even) {
+        background: #888;
       }
     </style>
   </head>
@@ -36,14 +35,17 @@
         <h2>block 2</h2>
       </div>
     </div>
-    <h3>example with button</h3>
+    <h3>example with button and step of 2</h3>
     <div class="et-wrapper">
-      <button class="et-trigger" et-in="moveFromRight" et-out="moveToRightEasing">Next</button>
+      <button class="et-trigger" et-in="moveFromRight" et-out="moveToRightEasing" et-step="2">Next</button>
       <div class="et-block">
         <h2>block 1</h2>
       </div>
       <div class="et-block">
         <h2>block 2</h2>
+      </div>
+      <div class="et-block">
+        <h2>block 3</h2>
       </div>
     </div>
     <script src="../src/js/elementTransitions.js"></script>
