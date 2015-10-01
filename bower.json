@@ -1,0 +1,29 @@
+{
+  "name": "ElementTransitions",
+  "version": "1.0",
+  "homepage": "https://github.com/soixantecircuits/ElementTransitions",
+  "authors": [
+    "hugohil <hugo@soixantecircuits.fr>"
+  ],
+  "description": "VanillaJS of dan-silver's ElementTransitions.js",
+  "main": "build/elementTransitions.min.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "css",
+    "animations",
+    "animation",
+    "transition",
+    "transitions"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demo"
+  ]
+}
