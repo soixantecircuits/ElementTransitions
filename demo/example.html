@@ -4,10 +4,12 @@
     <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
     <link rel="stylesheet" type="text/css" href="../src/css/elementTransitions.css" />
     <style>
+      body {
+        font-family: sans-serif;
+      }
       .et-wrapper {
         width: 200px;
         height: 200px;
-        font-family: sans-serif;
         color: white;
       }
       .et-block {
@@ -25,6 +27,7 @@
     </style>
   </head>
   <body>
+    <h3>simple example</h3>
     <div class="et-wrapper et-trigger" et-in="rotateSlideIn" et-out="rotateSlideOut">
       <div class="et-block">
         <h2>block 1</h2>
@@ -33,6 +36,7 @@
         <h2>block 2</h2>
       </div>
     </div>
+    <h3>example with button</h3>
     <div class="et-wrapper">
       <button class="et-trigger" et-in="rotateSlideIn" et-out="rotateSlideOut">Next</button>
       <div class="et-block">

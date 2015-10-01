@@ -47,7 +47,10 @@ var ElementTransition = function(){
     var currentBlock = blocks[current];
 
     addMultipleEventsListener(trigger, self.supportedEvents, function (event){
-      if(wrapper.dataset.isAnimating == true){
+      // Not sure if the `event.preventDefault()` is a good idea. Need to cancel double events on touch devices.
+      // I'm open to suggestions: ping @hugohil pretty much anywhere :)
+      event.preventDefault();
+      if(wrapper.dataset.isAnimating == 'true'){
         return false;
       }
       wrapper.dataset.isAnimating = true;
@@ -60,7 +63,7 @@ var ElementTransition = function(){
       }
 
       currentBlock.addEventListener(self.animationEndEventName, function (event){
-        currentBlock.removeEventListener(self.animationEndEventName);
+        currentBlock.removeEventListener(self.animationEndEventName, arguments.callee);
 
         // Switch current block
         var prevBlock = currentBlock;
@@ -74,7 +77,7 @@ var ElementTransition = function(){
         }
 
         currentBlock.addEventListener(self.animationEndEventName, function (event){
-          currentBlock.removeEventListener(self.animationEndEventName);
+          currentBlock.removeEventListener(self.animationEndEventName, arguments.callee);
 
           prevBlock.className = prevBlock.dataset.originalClassList;
           currentBlock.className = currentBlock.dataset.originalClassList + ' et-block-current';
