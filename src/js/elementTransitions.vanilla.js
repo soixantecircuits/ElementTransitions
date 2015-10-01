@@ -1,11 +1,11 @@
 /**
- * ElementTransition.js
+ * ElementTransitions.js
  * Initially by @dan-silver
  * Re-mastered version by @hugohil
  *
  * @todo Support an autoload attribute
  */
-var ElementTransition = function(){
+var ElementTransitions = function(){
   var self = this;
 
   /**
@@ -35,55 +35,64 @@ var ElementTransition = function(){
 
   /**
    * Initialize event handlers and animations.
-   * @param  {HTMLElement} trigger The HTML element on which you clickt to trigger animations.
+   * @param  {HTMLElement} trigger The HTML element on which you click to trigger animations.
    * @param  {HTMLElement} wrapper The HTML element containing the blocks (may be the same as trigger).
    * @return {void}
    */
   function initializeAnimations (trigger, wrapper){
-    var step = trigger.getAttribute('et-step') || 1,
-        blocks = wrapper.querySelectorAll('.et-block'),
-        current = wrapper.dataset.current;
-
-    var currentBlock = blocks[current];
-
     addMultipleEventsListener(trigger, self.supportedEvents, function (event){
       // Not sure if the `event.preventDefault()` is a good idea. Need to cancel double events on touch devices.
       // I'm open to suggestions: ping @hugohil pretty much anywhere :)
       event.preventDefault();
-      if(wrapper.dataset.isAnimating == 'true'){
-        return false;
-      }
-      wrapper.dataset.isAnimating = true;
+      animate(wrapper, trigger);
+    });
+  }
 
-      var outClass = formatClass(trigger.getAttribute('et-out')),
-          inClass = formatClass(trigger.getAttribute('et-in'));
+  /**
+   * Acutally animate the element
+   * @param  {HTMLElement} trigger The HTML element on which you clicked to trigger animations.
+   * @param  {HTMLElement} wrapper The HTML element containing the blocks (may be the same as trigger).
+   * @return {void}
+   */
+  function animate(wrapper, trigger){
+    var step = trigger.getAttribute('et-step') || 1,
+        blocks = wrapper.querySelectorAll('.et-block'),
+        current = wrapper.dataset.current,
+        currentBlock = blocks[current];
 
-      for (var i = 0; i < outClass.length; i++) {
-        toggleClass(currentBlock, outClass[i]);
+    if(wrapper.dataset.isAnimating == 'true'){
+      return false;
+    }
+    wrapper.dataset.isAnimating = true;
+
+    var outClass = formatClass(trigger.getAttribute('et-out')),
+        inClass = formatClass(trigger.getAttribute('et-in'));
+
+    for (var i = 0; i < outClass.length; i++) {
+      toggleClass(currentBlock, outClass[i]);
+    }
+
+    currentBlock.addEventListener(self.animationEndEventName, function (event){
+      currentBlock.removeEventListener(self.animationEndEventName, arguments.callee);
+
+      // Switch current block
+      var prevBlock = currentBlock;
+      current = ((Number(current) + step) > blocks.length - 1) ? 0 : Number(current) + step;
+      wrapper.dataset.current = current;
+      currentBlock = blocks[current];
+
+      for (var i = 0; i < inClass.length; i++) {
+        toggleClass(currentBlock, inClass[i]);
+        toggleClass(currentBlock, 'et-block-current');
       }
 
       currentBlock.addEventListener(self.animationEndEventName, function (event){
         currentBlock.removeEventListener(self.animationEndEventName, arguments.callee);
 
-        // Switch current block
-        var prevBlock = currentBlock;
-        current = ((Number(current) + step) > blocks.length - 1) ? 0 : Number(current) + step;
-        wrapper.dataset.current = current;
-        currentBlock = blocks[current];
+        prevBlock.className = prevBlock.dataset.originalClassList;
+        currentBlock.className = currentBlock.dataset.originalClassList + ' et-block-current';
 
-        for (var i = 0; i < inClass.length; i++) {
-          toggleClass(currentBlock, inClass[i]);
-          toggleClass(currentBlock, 'et-block-current');
-        }
-
-        currentBlock.addEventListener(self.animationEndEventName, function (event){
-          currentBlock.removeEventListener(self.animationEndEventName, arguments.callee);
-
-          prevBlock.className = prevBlock.dataset.originalClassList;
-          currentBlock.className = currentBlock.dataset.originalClassList + ' et-block-current';
-
-          wrapper.dataset.isAnimating = false;
-        });
+        wrapper.dataset.isAnimating = false;
       });
     });
   }
@@ -160,9 +169,10 @@ var ElementTransition = function(){
   }
 
   return {
-    init: init
+    init: init,
+    animate: animate
   }
 }
 
-var elementTransition = ElementTransition();
-elementTransition.init();
+var elementTransitions = ElementTransitions();
+elementTransitions.init();
