@@ -12,7 +12,7 @@ var ElementTransitions = function(){
    * [init description]
    * @return {void}
    */
-  function init (){
+  function init (trigger){
     self.animationEndEventName = getAnimationEndVendorName();
     self.supportedEvents = ['click', 'touchend'];
 
@@ -24,13 +24,15 @@ var ElementTransitions = function(){
     var wrappers = document.querySelectorAll(".et-wrapper");
     for (var i = 0; i < wrappers.length; i++) {
       var wrapper = wrappers[i];
-      wrapper.loop = wrapper.getAttribute('loop') || true;
-      console.log('elementTransitions.js - ', wrapper.loop);
+      wrapper.loop = wrapper.getAttribute('et-loop') || true;
+      wrapper.multiTrigger = wrapper.getAttribute('et-multi-trigger') || false;
       wrapper.dataset.current = 0;
       toggleClass(wrapper.querySelectorAll('.et-block')[wrapper.dataset.current], 'et-block-current');
       wrapper.dataset.isAnimating = false;
 
-      var trigger = (wrapper.className.indexOf('et-trigger') > -1) ? wrapper : wrapper.querySelector('.et-trigger');
+      if(!trigger){
+        trigger = (wrapper.className.indexOf('et-trigger') > -1) ? wrapper : wrapper.querySelector('.et-trigger');
+      }
       initializeAnimations(trigger, wrapper);
     }
   }
@@ -41,13 +43,19 @@ var ElementTransitions = function(){
    * @param  {HTMLElement} wrapper The HTML element containing the blocks (may be the same as trigger).
    * @return {void}
    */
-  function initializeAnimations (trigger, wrapper){
-    addMultipleEventsListener(trigger, self.supportedEvents, function (event){
-      // Not sure if the `event.preventDefault()` is a good idea. Need to cancel double events on touch devices.
-      // I'm open to suggestions: ping @hugohil pretty much anywhere :)
-      event.preventDefault();
-      animate(wrapper, trigger);
-    });
+  function initializeAnimations (triggers, wrapper){
+    triggers = (wrapper.multiTrigger == 'true') ? triggers : [triggers];
+    for (var i = 0; i < triggers.length; i++) {
+      var trigger = triggers[i];
+      addMultipleEventsListener(trigger, self.supportedEvents, function (event){
+        trigger = event.target;
+        // Not sure if the `event.preventDefault()` is a good idea. Need to cancel double events on touch devices.
+        // I'm open to suggestions: ping @hugohil pretty much anywhere :)
+        event.preventDefault();
+        // `trigger` variable here is in reality the last passed in the loop. Need to scope this.
+        animate(wrapper, trigger);
+      });
+    }
   }
 
   /**
@@ -61,15 +69,29 @@ var ElementTransitions = function(){
         blocks = wrapper.querySelectorAll('.et-block'),
         current = wrapper.dataset.current,
         currentBlock = blocks[current],
-        overflow = (+current + +step) > (blocks.length - 1);
+        reverse = (trigger.getAttribute('et-reverse') == 'true'),
+        overflow = null;
+
+    if(reverse){
+      overflow = (+current - +step) < 0;
+    } else {
+      overflow = (+current + +step) > (blocks.length - 1);
+    }
 
     if((wrapper.dataset.isAnimating == 'true') || (overflow && wrapper.loop == 'false')){
       return false;
     }
     wrapper.dataset.isAnimating = true;
 
-    var outClass = formatClass(trigger.getAttribute('et-out')),
-        inClass = formatClass(trigger.getAttribute('et-in'));
+    var outAttribute = (trigger.getAttribute('et-out')) ? trigger.getAttribute('et-out') : wrapper.getAttribute('et-out'),
+        inAttribute = (trigger.getAttribute('et-in')) ? trigger.getAttribute('et-in') : wrapper.getAttribute('et-in');
+
+    if(!outAttribute || !inAttribute){
+      console.error('elementTransitions.js - No `et-out` or `et-in` attribute specified.');
+    }
+
+    var outClass = formatClass(outAttribute),
+        inClass = formatClass(inAttribute);
 
     for (var i = 0; i < outClass.length; i++) {
       toggleClass(currentBlock, outClass[i]);
@@ -81,7 +103,11 @@ var ElementTransitions = function(){
       // Switch current block
       var prevBlock = currentBlock;
       // + operator in front of variable cast it to Number(). Less readable but more concise.
-      current = (overflow) ? (+current + +step) - blocks.length : +current + +step;
+      if(reverse){
+        current = (overflow) ? (+current - +step) + blocks.length : +current - +step;
+      } else {
+        current = (overflow) ? (+current + +step) - blocks.length : +current + +step;
+      }
       wrapper.dataset.current = current;
       currentBlock = blocks[current];
 
