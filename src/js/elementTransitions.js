@@ -176,4 +176,3 @@ var ElementTransitions = function(){
 }
 
 var elementTransitions = ElementTransitions();
-elementTransitions.init();
