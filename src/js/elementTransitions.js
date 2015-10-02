@@ -18,7 +18,7 @@ var ElementTransitions = function(){
 
     var blocks = document.querySelectorAll('.et-block');
     for (var i = 0; i < blocks.length; i++) {
-      blocks[i].dataset.originalClassList = blocks[i].className;
+      initializeBlock(blocks[i]);
     };
 
     var wrappers = document.querySelectorAll(".et-wrapper");
@@ -36,6 +36,15 @@ var ElementTransitions = function(){
       }
       initializeAnimations(trigger, wrapper);
     }
+  }
+
+  /**
+   * Create required attributes on a specific element
+   * @param  {HTMLElement} block The block to apply attributes
+   * @return {void}
+   */
+  function initializeBlock (block){
+    block.dataset.originalClassList = block.className;
   }
 
   /**
@@ -201,7 +210,8 @@ var ElementTransitions = function(){
 
   return {
     init: init,
-    animate: animate
+    animate: animate,
+    initializeBlock: initializeBlock
   }
 }
 
