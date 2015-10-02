@@ -24,6 +24,8 @@ var ElementTransitions = function(){
     var wrappers = document.querySelectorAll(".et-wrapper");
     for (var i = 0; i < wrappers.length; i++) {
       var wrapper = wrappers[i];
+      wrapper.loop = wrapper.getAttribute('loop') || true;
+      console.log('elementTransitions.js - ', wrapper.loop);
       wrapper.dataset.current = 0;
       toggleClass(wrapper.querySelectorAll('.et-block')[wrapper.dataset.current], 'et-block-current');
       wrapper.dataset.isAnimating = false;
@@ -58,9 +60,10 @@ var ElementTransitions = function(){
     var step = trigger.getAttribute('et-step') || 1,
         blocks = wrapper.querySelectorAll('.et-block'),
         current = wrapper.dataset.current,
-        currentBlock = blocks[current];
+        currentBlock = blocks[current],
+        overflow = (+current + +step) > (blocks.length - 1);
 
-    if(wrapper.dataset.isAnimating == 'true'){
+    if((wrapper.dataset.isAnimating == 'true') || (overflow && wrapper.loop == 'false')){
       return false;
     }
     wrapper.dataset.isAnimating = true;
@@ -78,7 +81,7 @@ var ElementTransitions = function(){
       // Switch current block
       var prevBlock = currentBlock;
       // + operator in front of variable cast it to Number(). Less readable but more concise.
-      current = ((+current + +step) > (blocks.length - 1)) ? (+current + +step) - blocks.length : +current + +step;
+      current = (overflow) ? (+current + +step) - blocks.length : +current + +step;
       wrapper.dataset.current = current;
       currentBlock = blocks[current];
 
