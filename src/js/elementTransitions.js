@@ -12,7 +12,7 @@ var ElementTransitions = function(){
    * [init description]
    * @return {void}
    */
-  function init (trigger){
+  function init (){
     self.animationEndEventName = getAnimationEndVendorName();
     self.supportedEvents = ['click', 'touchend'];
 
@@ -30,7 +30,8 @@ var ElementTransitions = function(){
       toggleClass(wrapper.querySelectorAll('.et-block')[wrapper.dataset.current], 'et-block-current');
       wrapper.dataset.isAnimating = false;
 
-      if(!trigger){
+      var trigger = document.querySelectorAll(wrapper.getAttribute('et-trigger-selector'));
+      if(!trigger.length){
         trigger = (wrapper.className.indexOf('et-trigger') > -1) ? wrapper : wrapper.querySelector('.et-trigger');
       }
       initializeAnimations(trigger, wrapper);

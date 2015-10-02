@@ -48,6 +48,22 @@
         <h2>block 3</h2>
       </div>
     </div>
+    <h3>example with non looping list and multiple externals triggers</h3>
+    <div>
+      <div class="et-wrapper" et-multi-trigger="true" et-loop="false" et-trigger-selector=".trigger-button">
+        <div class="et-block">
+          <h2>block 1</h2>
+        </div>
+        <div class="et-block">
+          <h2>block 2</h2>
+        </div>
+      </div>
+      <button class="trigger-button" et-in="rotateUnfoldTop" et-out="rotateFoldBottom" et-reverse="true">prev</button>
+      <button class="trigger-button" et-in="rotateUnfoldBottom" et-out="rotateFoldTop">next</button>
+    </div>
     <script src="../src/js/elementTransitions.js"></script>
+    <script type="text/javascript">
+      elementTransitions.init();
+    </script>
   </body>
 </html>
