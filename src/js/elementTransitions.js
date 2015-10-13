@@ -26,6 +26,7 @@ var ElementTransitions = function(){
       var wrapper = wrappers[i];
       wrapper.loop = wrapper.getAttribute('et-loop') || true;
       wrapper.multiTrigger = wrapper.getAttribute('et-multi-trigger') || false;
+      wrapper.noTrigger = wrapper.getAttribute('et-no-trigger') || false;
       wrapper.dataset.current = 0;
       toggleClass(wrapper.querySelectorAll('.et-block')[wrapper.dataset.current], 'et-block-current');
       wrapper.dataset.isAnimating = false;
@@ -54,6 +55,8 @@ var ElementTransitions = function(){
    * @return {void}
    */
   function initializeAnimations (triggers, wrapper){
+    if(!wrapper.noTrigger) return;
+
     triggers = (wrapper.multiTrigger == 'true') ? triggers : [triggers];
     for (var i = 0; i < triggers.length; i++) {
       var trigger = triggers[i];
