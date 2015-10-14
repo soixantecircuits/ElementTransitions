@@ -86,6 +86,10 @@ var ElementTransitions = function(){
         reverse = (trigger.getAttribute('et-reverse') == 'true'),
         overflow = null;
 
+    if(!currentBlock){
+      return;
+    }
+
     if(reverse){
       overflow = (+current - +step) < 0;
     } else {
