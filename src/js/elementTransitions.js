@@ -12,9 +12,10 @@ var ElementTransitions = function(){
    * [init description]
    * @return {void}
    */
-  function init (){
+  function init (afterAnimation){
     self.animationEndEventName = getAnimationEndVendorName();
     self.supportedEvents = ['click', 'touchend'];
+    self.afterAnimation = afterAnimation;
 
     var blocks = document.querySelectorAll('.et-block');
     for (var i = 0; i < blocks.length; i++) {
@@ -136,6 +137,9 @@ var ElementTransitions = function(){
         currentBlock.className = currentBlock.dataset.originalClassList + ' et-block-current';
 
         wrapper.dataset.isAnimating = false;
+        if(typeof self.afterAnimation == 'function'){
+          self.afterAnimation(prevBlock, currentBlock);
+        }
       });
     });
   }
@@ -211,10 +215,32 @@ var ElementTransitions = function(){
     element.className = (element.className.indexOf(classname) > -1) ? element.className.replace(re, '') : element.className + ' ' + classname;
   }
 
+  /**
+   * return isAnimating property
+   * @param {HTMLElement} wrapper the wrapper on which to check.
+   * @return {Boolean} weither an animation is currently processing or not.
+   */
+  function getIsAnimating (wrapper){
+    wrapper = (wrapper.length) ? wrapper[0] : wrapper;
+    return wrapper.dataset.isAnimating;
+  }
+
+  /**
+   * reset the data-current attribute for the wrapper
+   * @param  {HTMLElement} wrapper wrapper to reset
+   * @return {void}
+   */
+  function resetCurrent (wrapper){
+    wrapper = (wrapper.length) ? wrapper[0] : wrapper;
+    wrapper.dataset.current = 0;
+  }
+
   return {
     init: init,
     animate: animate,
-    initializeBlock: initializeBlock
+    initializeBlock: initializeBlock,
+    isAnimating: getIsAnimating,
+    resetCurrent: resetCurrent
   }
 }
 
