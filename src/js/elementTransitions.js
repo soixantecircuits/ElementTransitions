@@ -29,6 +29,7 @@ var ElementTransitions = function(){
       wrapper.multiTrigger = wrapper.getAttribute('et-multi-trigger') || false;
       wrapper.noTrigger = wrapper.getAttribute('et-no-trigger') || false;
       wrapper.dataset.current = 0;
+      wrapper.specialAnim = wrapper.getAttribute('et-special') || false;
       toggleClass(wrapper.querySelectorAll('.et-block')[wrapper.dataset.current], 'et-block-current');
       wrapper.dataset.isAnimating = false;
 
@@ -115,8 +116,9 @@ var ElementTransitions = function(){
       toggleClass(currentBlock, outClass[i]);
     }
 
-    currentBlock.addEventListener(self.animationEndEventName, function (event){
-      currentBlock.removeEventListener(self.animationEndEventName, arguments.callee);
+    // I commented that to trigger the animation at the same time, without unwanter delay. Need to find a good way to do it
+    // currentBlock.addEventListener(self.animationEndEventName, function (event){
+      // currentBlock.removeEventListener(self.animationEndEventName, arguments.callee);
 
       // Switch current block
       var prevBlock = currentBlock;
@@ -145,7 +147,7 @@ var ElementTransitions = function(){
           self.afterAnimation(prevBlock, currentBlock);
         }
       });
-    });
+    // });
   }
 
   /**

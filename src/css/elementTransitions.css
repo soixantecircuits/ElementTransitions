@@ -52,7 +52,9 @@
 }
 
 /* animation sets */
-
+.et-singleAnim {
+  -webkit-animation-fill-mode: forwards;
+}
 /* move from / to  */
 
 .et-moveToLeft {
@@ -80,9 +82,9 @@
 }
 
 .et-moveToTop {
-  -webkit-animation: moveToTop .6s ease both;
-  -moz-animation: moveToTop .6s ease both;
-  animation: moveToTop .6s ease both;
+  -webkit-animation: moveToTop .5s ease both;
+  -moz-animation: moveToTop .5s ease both;
+  animation: moveToTop .5s ease both;
 }
 
 .et-moveFromTop {
@@ -92,15 +94,15 @@
 }
 
 .et-moveToBottom {
-  -webkit-animation: moveToBottom .6s ease both;
-  -moz-animation: moveToBottom .6s ease both;
-  animation: moveToBottom .6s ease both;
+  -webkit-animation: moveToBottom .5s ease both;
+  -moz-animation: moveToBottom .5s ease both;
+  animation: moveToBottom .5s ease both;
 }
 
 .et-moveFromBottom {
-  -webkit-animation: moveFromBottom .6s ease both;
-  -moz-animation: moveFromBottom .6s ease both;
-  animation: moveFromBottom .6s ease both;
+  -webkit-animation: moveFromBottom .5s ease both;
+  -moz-animation: moveFromBottom .5s ease both;
+  animation: moveFromBottom .5s ease both;
 }
 
 /* fade */
@@ -399,7 +401,26 @@
   -moz-animation: scaleUpCenter .4s ease-out both;
   animation: scaleUpCenter .4s ease-out both;
 }
-
+.et-scaleInCenter {
+  -webkit-animation: scaleInCenter .4s ease-out both;
+  -moz-animation: scaleInCenter .4s ease-out both;
+  animation: scaleInCenter .4s ease-out both;
+}
+.et-scaleInCenterRevert {
+  -webkit-animation: scaleInCenterRevert .4s ease-out both;
+  -moz-animation: scaleInCenterRevert .4s ease-out both;
+  animation: scaleInCenterRevert .4s ease-out both;
+}
+.et-scaleOutCenter {
+  -webkit-animation: scaleOutCenter .4s ease-out;
+  -moz-animation: scaleOutCenter .4s ease-out;
+  animation: scaleOutCenter .4s ease-out;
+}
+.et-scaleOutCenterRevert {
+  -webkit-animation: scaleOutCenterRevert .4s ease-out;
+  -moz-animation: scaleOutCenterRevert .4s ease-out;
+  animation: scaleOutCenterRevert .4s ease-out;
+}
 /********************************* keyframes **************************************/
 
 /* scale and fade */
@@ -462,6 +483,44 @@
 }
 @keyframes scaleUpCenter {
   from { opacity: 0; transform: scale(.7); }
+}
+
+@-webkit-keyframes scaleOutCenter {
+  to { opacity: 0; -webkit-transform: scale(1.2); }
+}
+@-moz-keyframes scaleOutCenter {
+  to { opacity: 0; -moz-transform: scale(1.2); }
+}
+@keyframes scaleOutCenter {
+  to { opacity: 0; transform: scale(1.2); }
+}
+@-webkit-keyframes scaleOutCenterRevert {
+  to { opacity: 1; -webkit-transform: scale(1); }
+}
+@-moz-keyframes scaleOutCenterRevert {
+  to { opacity: 1; -moz-transform: scale(1); }
+}
+@keyframes scaleOutCenterRevert {
+  to { opacity: 1; transform: scale(1); }
+}
+
+@-webkit-keyframes scaleInCenter {
+  to { -webkit-transform: scale(1); }
+}
+@-moz-keyframes scaleInCenter {
+  to { -moz-transform: scale(1); }
+}
+@keyframes scaleInCenter {
+  to { transform: scale(1); }
+}
+@-webkit-keyframes scaleInCenterRevert {
+  to { -webkit-transform: scale(.7); }
+}
+@-moz-keyframes scaleInCenterRevert {
+  to { -moz-transform: scale(.7); }
+}
+@keyframes scaleInCenterRevert {
+  to { transform: scale(.7); }
 }
 
 /* rotate sides first and scale */
