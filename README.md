@@ -1,6 +1,6 @@
 # ElementTransitions
 
-**Fork under active development. For any question, contact @hugohil.**
+**Fork under active development.**
 
 ## Installation
 
